@@ -83,7 +83,14 @@ class HMM:
    ## you do this.
     def generate(self, n):
         """return an n-length Sequence by randomly sampling from this HMM."""
-        pass
+        print(list(self.transitions['#'].keys()))
+        print(self.transitions['#'].values())
+
+        #gets the starting state with probabilities 
+        choice = numpy.random.choice(list(self.transitions['#']), p=list(self.transitions['#'].values()))
+        print(choice)
+        #goal 
+        return
 
     def forward(self, sequence):
         pass
@@ -107,6 +114,7 @@ if __name__ == "__main__":
     print(h.transitions)
     print("------------------------")
     print(h.emissions)
+    h.generate(5)
 
 
 
