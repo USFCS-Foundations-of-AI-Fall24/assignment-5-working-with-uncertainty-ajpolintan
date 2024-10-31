@@ -85,16 +85,42 @@ class HMM:
         """return an n-length Sequence by randomly sampling from this HMM."""
         print(list(self.transitions['#']))
         print(list(self.transitions['#'].values()))
-
+        states = []
+        emissions = []
         #gets the starting state with probabilities by turning key value pairs into lists
         initial_state = numpy.random.choice(list(self.transitions['#']), p=list(self.transitions['#'].values()))
         initial_emission = numpy.random.choice(list(self.emissions[initial_state]), p=list(self.emissions[initial_state].values()))
-        i = 0
-        for i in range(n - 1):
-            i = i + 1 
-            print(i)
-        print(initial_state)
-        print(initial_emission)
+        
+        states.append(initial_state)
+        emissions.append(initial_emission)
+        
+       # print("initial state: " + initial_state)
+       # print("inital emission: " + initial_emission)
+        next_state = "" 
+        #->send in happy
+        for i in range(n-1) :
+            ## if next state is not empty
+            if next_state == "":
+                #get value for the inital state
+                next_state =  numpy.random.choice(list(self.transitions[initial_state]), p=list(self.transitions[initial_state].values()))
+            else:
+                next_state = numpy.random.choice(list(self.transitions[next_state]), p=list(self.transitions[next_state].values()))
+            emission = numpy.random.choice(list(self.emissions[next_state]), p=list(self.emissions[next_state].values()))
+            
+            states.append(next_state)
+            emissions.append(emission)
+           
+
+        state_list = ""
+        for s in states:
+            state_list = state_list + s + " "
+        print(state_list)
+
+        emission_list = ""
+        for e in emissions: 
+            emission_list = emission_list + e + " "
+        print(emission_list)
+       
         #goal 
         return
 
@@ -116,7 +142,7 @@ class HMM:
 if __name__ == "__main__":
     #print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
     h = HMM()
-    h.load('cat')
+    h.load('partofspeech')
     print(h.transitions)
     print("------------------------")
     print(h.emissions)
