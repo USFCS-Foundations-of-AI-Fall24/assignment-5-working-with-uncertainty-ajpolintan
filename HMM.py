@@ -142,7 +142,7 @@ class HMM:
 if __name__ == "__main__":
     #print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
     h = HMM()
-    h.load('cat')
+    h.load('partofspeech')
     print(h.transitions)
     print("------------------------")
     print(h.emissions)
