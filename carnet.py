@@ -60,7 +60,12 @@ cpd_moves = TabularCPD(
                  "Starts": ['yes', 'no'] }
 )
 
-
+cpd_key = TabularCPD(
+    variable="KeyPresent", 
+    variable_card = 2,
+    values=[[0.7,0.3]],
+    state_names={"KeyPresent": ['yes', 'no']} 
+)
 # Associating the parameters with the model structure
 car_model.add_cpds( cpd_starts, cpd_ignition, cpd_gas, cpd_radio, cpd_battery, cpd_moves)
 
