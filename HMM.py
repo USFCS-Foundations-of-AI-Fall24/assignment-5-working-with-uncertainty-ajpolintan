@@ -142,7 +142,11 @@ class HMM:
 
     def forward(self, sequence):
         matrix = []
-        for s in list(self.transitions.keys()) :
+        states = list(self.transitions.keys()) 
+        emissions = self.emissions
+        transitions = self.transitions
+
+        for s in states:
             states = []
             print(s)
             if s == "#" :
@@ -150,9 +154,32 @@ class HMM:
                     states.append(1.0) 
             else :
                 for i in range(sequence) :
-                    states.append(0)
+                    states.append(0.0)
             matrix.append(states)
         
+        state_values = self.transitions.keys()
+        print(state_values)
+        #lets say the first value is purr
+        i = 0
+        for s in state_values:
+            print(s)
+            if s == '#' :
+                matrix[i][1] = 0
+            else :
+                print(emissions[s]['purr']) 
+                matrix[i][1] = float(emissions[s]['purr']) * float(transitions['#'][s]) * matrix[0][0]
+            i = i + 1
+            print(i)
+        '''
+        for i in range(len(matrix)):
+            if matrix[i][0] == '#': 
+                matrix[0][2] = 0
+            else:
+                
+                matrix[i][2] = float(emissions[matrix[i][0]]['purr']) * float(transitions['#'][matrix[i][0]]) * matrix[0][1]
+                print("DOES THIS PRINT" + str(emissions[matrix[1][0]]['purr']))
+            #matrix[1][1] = 
+        '''
         debug_matrix = numpy.array(matrix)
         print(debug_matrix)
 
