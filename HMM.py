@@ -148,9 +148,9 @@ class HMM:
         emissions = self.emissions
         transitions = self.transitions
 
-        outputs = sequence.outputseq
+        #outputs = sequence.outputseq
         outputs = ['purr','silent','silent','meow','meow']
-        sequence_length = len(sequence)
+        sequence_length = len(sequence) + 1
 
         for s in keys:
             states = []
@@ -175,7 +175,7 @@ class HMM:
             i = i + 1
 
 
-        for i in range(2,len(outputs)) :
+        for i in range(2,len(outputs) + 1) :
             for s in keys:
 
                 # set # to 0 and skip #
@@ -190,11 +190,13 @@ class HMM:
                         continue
                     print(s2)
                     print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
+                    print(outputs[i-1])
                     # something like [happy's][silents]
                     print("EMISSION: " + str(emissions[s][outputs[i-1]]))
-                    print("TRANSITION" + transitions[s2][s])
-                    sum =  sum + matrix[keys.index(s2)][i-1] * float(emissions[s][outputs[i-1]]) * float(transitions[s2][s])
+                    print("TRANSITION: " + transitions[s2][s])
+                    sum =  sum + float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s]) 
                     print("SUM: " + str(sum))
+                sum = round(sum,i + 1)
                 print("--------")
                 print("TOTAL SUM: " + str(sum))
                 print("--------")
