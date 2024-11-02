@@ -123,8 +123,41 @@ class HMM:
        
         #goal 
         return
+    
+    '''
+    set up inital matrix with P=1.0 for the # state
+    for each state on day 1: P(state | eo) = d(eo | sat)
+
+    for i = 2 to n :
+        for each state s:
+        sum = 0
+        for s2 in states :
+            sum += M[s2, i-1] * T[s2,s] * E[O[i],s]
+            
+
+            M[s2,i] = sum
+    '''
+
+    
 
     def forward(self, sequence):
+        matrix = []
+        for s in list(self.transitions.keys()) :
+            states = []
+            print(s)
+            if s == "#" :
+                for i in range(sequence) :
+                    states.append(1.0) 
+            else :
+                for i in range(sequence) :
+                    states.append(0)
+            matrix.append(states)
+        
+        debug_matrix = numpy.array(matrix)
+        print(debug_matrix)
+
+        
+        #matrix is now a list of lists 
         pass
     ## you do this: Implement the Viterbi algorithm. Given a Sequence with a list of emissions,
     ## determine the most likely sequence of states.
@@ -142,10 +175,12 @@ class HMM:
 if __name__ == "__main__":
     #print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
     h = HMM()
-    h.load('partofspeech')
+    h.load('cat')
     print(h.transitions)
     print("------------------------")
     print(h.emissions)
     h.generate(20)
+
+    h.forward(10)
 
 
