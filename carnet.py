@@ -52,6 +52,8 @@ cpd_starts = TabularCPD(
     state_names={"Starts":['yes','no'], "Ignition":["Works", "Doesn't work"], "Gas":['Full',"Empty"], "KeyPresent":['Present','Not Present'],},
 )
 
+print(cpd_starts)
+
 cpd_moves = TabularCPD(
     variable="Moves", variable_card=2,
     values=[[0.8, 0.01],[0.2, 0.99]],
@@ -95,4 +97,8 @@ if __name__ == "__main__":
 
     #What is the probability that the car starts if the radio works has gas in it?
     q = car_infer.query(variables=["Starts"], evidence={"Radio" : "turns on", "Gas" : "Full"})
+    print(q)
+
+    #query. Key is not present given that the car does not move
+    q = car_infer.query(variables=["KeyPresent"], evidence={"Moves": "no"})
     print(q)
