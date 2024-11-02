@@ -165,13 +165,18 @@ class HMM:
         state_values = self.transitions.keys()
         print(state_values)
         #lets say the first value is purr
+        starting_state = 0
         i = 0
         for s in state_values:
             if s == '#' :
+                starting_state = i
                 matrix[i][1] = 0
             else :
                 print(outputs[0]) 
-                matrix[i][1] = float(emissions[s][outputs[0]]) * float(transitions['#'][s]) * matrix[0][0]
+                if outputs[0] not in emissions[s] :
+                    matrix[i][1] = 0
+                else :
+                    matrix[i][1] = float(emissions[s][outputs[0]]) * float(transitions['#'][s]) * matrix[starting_state][0]
             i = i + 1
 
 
@@ -180,7 +185,7 @@ class HMM:
 
                 # set # to 0 and skip #
                 if s == '#' :
-                    matrix[0][i] = 0
+                    matrix[starting_state][i] = 0
                     continue
 
                 sum = 0
@@ -192,9 +197,13 @@ class HMM:
                     print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
                     print(outputs[i-1])
                     # something like [happy's][silents]
-                    print("EMISSION: " + str(emissions[s][outputs[i-1]]))
+                    #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
                     print("TRANSITION: " + transitions[s2][s])
-                    sum =  sum + float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s]) 
+
+                    if outputs[i-1] not in emissions[s] :
+                        sum = sum + 0
+                    else :
+                        sum =  sum + float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s]) 
                     print("SUM: " + str(sum))
                 sum = round(sum,i + 1)
                 print("--------")
