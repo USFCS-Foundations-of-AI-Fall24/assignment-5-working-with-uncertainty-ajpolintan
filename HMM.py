@@ -82,6 +82,7 @@ class HMM:
 
    ## you do this.
     def generate(self, n):
+
         """return an n-length Sequence by randomly sampling from this HMM."""
         print(list(self.transitions['#']))
         print(list(self.transitions['#'].values()))
@@ -110,7 +111,7 @@ class HMM:
             states.append(next_state)
             emissions.append(emission)
            
-
+        
         state_list = ""
         for s in states:
             state_list = state_list + s + " "
@@ -122,7 +123,7 @@ class HMM:
         print(emission_list)
        
         #goal 
-        return
+        return Sequence(states,emissions)
     
     '''
     set up inital matrix with P=1.0 for the # state
@@ -142,18 +143,22 @@ class HMM:
 
     def forward(self, sequence):
         matrix = []
-        states = list(self.transitions.keys()) 
+        keys = list(self.transitions.keys()) 
+        print(keys)
         emissions = self.emissions
         transitions = self.transitions
 
-        for s in states:
+        outputs = sequence.outputseq
+        outputs = ['purr','silent','silent','meow','meow']
+        sequence_length = len(sequence)
+
+        for s in keys:
             states = []
-            print(s)
             if s == "#" :
-                for i in range(sequence) :
+                for i in range(sequence_length) :
                     states.append(1.0) 
             else :
-                for i in range(sequence) :
+                for i in range(sequence_length) :
                     states.append(0.0)
             matrix.append(states)
         
@@ -162,24 +167,40 @@ class HMM:
         #lets say the first value is purr
         i = 0
         for s in state_values:
-            print(s)
             if s == '#' :
                 matrix[i][1] = 0
             else :
-                print(emissions[s]['purr']) 
-                matrix[i][1] = float(emissions[s]['purr']) * float(transitions['#'][s]) * matrix[0][0]
+                print(outputs[0]) 
+                matrix[i][1] = float(emissions[s][outputs[0]]) * float(transitions['#'][s]) * matrix[0][0]
             i = i + 1
+
+
+        for i in range(2,len(outputs)) :
+            for s in keys:
+
+                # set # to 0 and skip #
+                if s == '#' :
+                    matrix[0][i] = 0
+                    continue
+
+                sum = 0
+                #happy
+                for s2 in keys :
+                    if s2 == '#':
+                        continue
+                    print(s2)
+                    print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
+                    # something like [happy's][silents]
+                    print("EMISSION: " + str(emissions[s][outputs[i-1]]))
+                    print("TRANSITION" + transitions[s2][s])
+                    sum =  sum + matrix[keys.index(s2)][i-1] * float(emissions[s][outputs[i-1]]) * float(transitions[s2][s])
+                    print("SUM: " + str(sum))
+                print("--------")
+                print("TOTAL SUM: " + str(sum))
+                print("--------")
+                matrix[keys.index(s)][i] = sum
             print(i)
-        '''
-        for i in range(len(matrix)):
-            if matrix[i][0] == '#': 
-                matrix[0][2] = 0
-            else:
-                
-                matrix[i][2] = float(emissions[matrix[i][0]]['purr']) * float(transitions['#'][matrix[i][0]]) * matrix[0][1]
-                print("DOES THIS PRINT" + str(emissions[matrix[1][0]]['purr']))
-            #matrix[1][1] = 
-        '''
+      
         debug_matrix = numpy.array(matrix)
         print(debug_matrix)
 
@@ -206,8 +227,9 @@ if __name__ == "__main__":
     print(h.transitions)
     print("------------------------")
     print(h.emissions)
-    h.generate(20)
-
-    h.forward(10)
+    seq = h.generate(5)
+    print(seq)
+    h.forward(seq)
+    
 
 
