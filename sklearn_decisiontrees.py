@@ -24,7 +24,7 @@ for train_index, test_index in kf.split(X) :
 
     # random forest classiier. run it 6 times
     #10,25,50
-    clf = RandomForestClassifier(criterion='entropy', n_estimators=50)
+    clf = RandomForestClassifier(criterion='gini', n_estimators=50)
     clf.fit(X_train, y_train)
     scores.append(clf.score(X_test, y_test))
 ('-------------')
@@ -59,10 +59,10 @@ models = {
     ),
 }
 param_grids = {
-    "Random Forest": {"n_estimators": [10, 20, 50, 100]},
-    "Hist Gradient Boosting": {"max_iter": [10, 20, 50, 100, 300, 500]},
+    "Random Forest": {"n_estimators": [5, 10, 15, 20]},
+    "Hist Gradient Boosting": {"max_iter": [25, 50, 75, 100]},
 }
-cv = KFold(n_splits=2, shuffle=True, random_state=0)
+cv = KFold(n_splits=5, shuffle=True, random_state=0)
 
 results = []
 for name, model in models.items():
