@@ -59,18 +59,43 @@ cpd_moves = TabularCPD(
     state_names={"Moves": ["yes", "no"],
                  "Starts": ['yes', 'no'] }
 )
-
+'''
 cpd_key = TabularCPD(
-    variable="KeyPresent", 
-    variable_card = 2,
-    values=[[0.7,0.3]],
-    state_names={"KeyPresent": ['yes', 'no']} 
+    variable=  "KeyPresent", variable_card=2,
+    values=[[0.75, 0.01],[0.25, 0.99]],
+    evidence=["Battery"],
+    evidence_card=[2],
+    state_names={"I": ["Works", "Doesn't work"],
+                 "Battery": ['Works',"Doesn't work"]}
 )
+'''
+
 # Associating the parameters with the model structure
 car_model.add_cpds( cpd_starts, cpd_ignition, cpd_gas, cpd_radio, cpd_battery, cpd_moves)
 
 car_infer = VariableElimination(car_model)
 
-print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
+#print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
 
+if __name__ == "__main__":
+    #print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
 
+    #second part
+    #not move, what is the probability that the batter is not working given the car will not move
+    q = car_infer.query(variables=["Radio"], evidence={"Moves":"no"})
+    print(q)
+    #what is the probability the car will not stoiop given the radio is not working
+    q = car_infer.query(variables=["Starts"], evidence={"Radio":"Doesn't turn on"})
+    print(q)
+
+    #what is the probability of the radio working change if we discover that the car has gas in it given the battery is working
+    q = car_infer.query(variables=["Radio", "Gas"], evidence={"Battery":"Works"})
+    print(q)
+
+    #what is the probability of the ignition failing change if we observe that the car doesn't have gas in it given the car doesn't move
+    q = car_infer.query(variables=["Ignition","Gas"], evidence={"Moves" : "no"})
+    print(q)
+
+    #What is the probability that the car starts if the radio works has gas in it?
+    q = car_infer.query(variables=["Starts"], evidence={"Radio" : "turns on", "Gas" : "Full"})
+    print(q)
