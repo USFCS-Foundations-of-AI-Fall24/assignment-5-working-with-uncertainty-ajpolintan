@@ -1,5 +1,4 @@
-
-
+import sys
 import random
 import argparse
 import codecs
@@ -38,7 +37,7 @@ class HMM:
         """reads HMM structure from transition (basename.trans),
         and emission (basename.emit) files,
         as well as the probabilities."""
-        print(basename)
+        print('CURRENT DOMAIN: ' + basename)
         with open(str(basename) + ".emit") as f:
             for lines in f : 
                 words = lines.rstrip('\n').split(" ")
@@ -57,7 +56,6 @@ class HMM:
                 else :
                     self.emissions[key][edge] = value
 
-                print(len(self.emissions[words[0]]))
 
         with open(str(basename) + ".trans") as f:
             for lines in f : 
@@ -82,10 +80,11 @@ class HMM:
 
    ## you do this.
     def generate(self, n):
-
+        print("Generating...")
         """return an n-length Sequence by randomly sampling from this HMM."""
-        print(list(self.transitions['#']))
-        print(list(self.transitions['#'].values()))
+        #print(list(self.transitions['#']))
+        #print(list(self.transitions['#'].values()))
+        
         states = []
         emissions = []
         #gets the starting state with probabilities by turning key value pairs into lists
@@ -121,8 +120,7 @@ class HMM:
         for e in emissions: 
             emission_list = emission_list + e + " "
         print(emission_list)
-       
-        #goal 
+    
         return Sequence(states,emissions)
     
     '''
@@ -142,19 +140,24 @@ class HMM:
     
 
     def forward(self, sequence):
+        #initialize the matrix
         matrix = []
+
+        #get all the types of states
         keys = list(self.transitions.keys()) 
         print(keys)
+        #define emissions and transitions
         emissions = self.emissions
         transitions = self.transitions
 
-        outputs = sequence.outputseq
+        #get the observations
+        outputs = sequence
         sequence_length = len(sequence) + 1
 
         #outputs = ['purr','silent','silent','meow','meow']
         #sequence_length = len(outputs) + 1
         
-
+        #Initalize the matrix and set # to 1 
         for s in keys:
             states = []
             if s == "#" :
@@ -165,22 +168,26 @@ class HMM:
                     states.append(0.0)
             matrix.append(states)
         
-        state_values = self.transitions.keys()
-        print(state_values)
-        #lets say the first value is purr
+        
+        #check where the value of starting state is
         starting_state = 0
         i = 0
-        for s in state_values:
+
+        #initial the '-' column 
+        for s in keys:
+            #if set the starting to 0
             if s == '#' :
                 starting_state = i
                 matrix[i][1] = 0
             else :
+                #get the starting values
                 print(outputs[0]) 
                 if outputs[0] not in emissions[s] :
                     matrix[i][1] = 0
                 else :
                     matrix[i][1] = float(emissions[s][outputs[0]]) * float(transitions['#'][s]) * matrix[starting_state][0]
             i = i + 1
+
 
 
         for i in range(2,len(outputs) + 1) :
@@ -199,7 +206,7 @@ class HMM:
                     if s2 == '#':
                         continue
                     #print(s2)
-                   # print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
+                    # print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
                     #print(outputs[i-1])
                     # something like [happy's][silents]
                     #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
@@ -230,15 +237,13 @@ class HMM:
     
         print(debug_matrix)
         print(matrix)
-        print(outputs)
-        print(sequence)
-        print(keys)
 
-        print(len(matrix))
         max = -1
         max_state = ""
         values = 0
         print(keys)
+
+        #Get the max probability and the state
         for i in range(len(matrix)):
             if matrix[i][len(outputs)] > max :
                 max = matrix[i][len(outputs)]
@@ -246,6 +251,8 @@ class HMM:
             values = values + matrix[i][len(outputs)]
  
             print(matrix[i][len(outputs)])   
+            
+        print(sequence)
         print("FORWARD RESULT: " + max_state)
         print("Probability: " + str(max / values))
         return max_state
@@ -266,14 +273,54 @@ class HMM:
 
 if __name__ == "__main__":
     #print(car_infer.query(variables=["Moves"],evidence={"Radio":"turns on", "Starts":"yes"}))
+    #if len(sys.argv) < 2:
+    #    print("Usage: wordfreq {--load --forward file")
+    #    sys.exit(-1)
+
+
+    parser = argparse.ArgumentParser()
+
+
+    #The directory that will be walked
+    parser.add_argument("domain", help="help the pat")
+    parser.add_argument("--forward", help="This will strip a part of the word")
+    parser.add_argument("--generate", help="Number of observations you would like to generate")
+
+    args = parser.parse_args()
+
+    print("ARGUMENTS")
+    print("------------")
+    print('domain: ' + str(args.domain))
+    print('generate: ' + str(args.generate))
+    print('forward: ' + str(args.forward))
+    print("------------")
+
+    domain = args.domain
+    num_sequence = args.generate
+    observation = args.forward
     h = HMM()
-    h.load('cat')
+    h.load(domain)
+    if args.generate is not None:
+        h.generate(int(num_sequence))
+
+    if args.forward is not None:
+        print('YAYYY')
+        with open(observation) as f:
+            print("HETAT")
+            for lines in f : 
+                print("RARSRA" + lines)
+                
+                words = lines.rstrip('\n').split(" ")
+                h.forward(words)
+''' 
+    h = HMM()
+    h.load('partofspeech')
     print(h.transitions)
     print("------------------------")
     print(h.emissions)
     seq = h.generate(10)
     print(seq)
     h.forward(seq)
-    
+'''    
 
 
