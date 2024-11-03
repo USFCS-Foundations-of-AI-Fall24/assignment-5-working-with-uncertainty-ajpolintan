@@ -149,8 +149,11 @@ class HMM:
         transitions = self.transitions
 
         #outputs = sequence.outputseq
+        #sequence_length = len(sequence) + 1
+
         outputs = ['purr','silent','silent','meow','meow']
-        sequence_length = len(sequence) + 1
+        sequence_length = len(outputs) + 1
+        
 
         for s in keys:
             states = []
@@ -185,6 +188,8 @@ class HMM:
 
                 # set # to 0 and skip #
                 if s == '#' :
+                    print(starting_state)
+                    print(i)
                     matrix[starting_state][i] = 0
                     continue
 
@@ -193,31 +198,59 @@ class HMM:
                 for s2 in keys :
                     if s2 == '#':
                         continue
-                    print(s2)
-                    print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
-                    print(outputs[i-1])
+                    #print(s2)
+                   # print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
+                    #print(outputs[i-1])
                     # something like [happy's][silents]
                     #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
-                    print("TRANSITION: " + transitions[s2][s])
+                    #print("TRANSITION: " + transitions[s2][s])
 
                     if outputs[i-1] not in emissions[s] :
                         sum = sum + 0
                     else :
-                        sum =  sum + float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s]) 
-                    print("SUM: " + str(sum))
-                sum = round(sum,i + 1)
+                        print("Current State: " +str(s))
+                        print(s2)
+                        print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))   
+                        print("EMISSION: " + str(emissions[s][outputs[i-1]]))
+                        print("TRANSITION: " + transitions[s2][s])
+                        
+                        sum = sum + float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s]) 
+                        print("SUM " + str(sum))
+                    #print("SUM: " + str(sum))
+                
                 print("--------")
                 print("TOTAL SUM: " + str(sum))
                 print("--------")
                 matrix[keys.index(s)][i] = sum
-            print(i)
-      
+            #print(i)
+       
         debug_matrix = numpy.array(matrix)
-        print(debug_matrix)
 
-        
+   
+    
+        print(debug_matrix)
+        print(matrix)
+        print(outputs)
+        print(sequence)
+        print(keys)
+
+        print(len(matrix))
+        max = -1
+        max_state = ""
+        values = 0
+        print(keys)
+        for i in range(len(matrix)):
+            if matrix[i][len(outputs)] > max :
+                max = matrix[i][len(outputs)]
+                max_state = keys[i]
+            values = values + matrix[i][len(outputs)]
+ 
+            print(matrix[i][len(outputs)])   
+        print("FORWARD RESULT: " + max_state)
+        print("Probability: " + str(max / values))
+        return max_state
         #matrix is now a list of lists 
-        pass
+        
     ## you do this: Implement the Viterbi algorithm. Given a Sequence with a list of emissions,
     ## determine the most likely sequence of states.
 
