@@ -148,11 +148,11 @@ class HMM:
         emissions = self.emissions
         transitions = self.transitions
 
-        #outputs = sequence.outputseq
-        #sequence_length = len(sequence) + 1
+        outputs = sequence.outputseq
+        sequence_length = len(sequence) + 1
 
-        outputs = ['purr','silent','silent','meow','meow']
-        sequence_length = len(outputs) + 1
+        #outputs = ['purr','silent','silent','meow','meow']
+        #sequence_length = len(outputs) + 1
         
 
         for s in keys:
@@ -271,7 +271,7 @@ if __name__ == "__main__":
     print(h.transitions)
     print("------------------------")
     print(h.emissions)
-    seq = h.generate(5)
+    seq = h.generate(10)
     print(seq)
     h.forward(seq)
     
