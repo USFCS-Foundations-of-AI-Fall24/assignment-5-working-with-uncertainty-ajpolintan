@@ -195,7 +195,7 @@ class HMM:
 
                 # set # to 0 and skip #
                 if s == '#' :
-                    print(starting_state)
+                    print('Starting  State: '  + str(starting_state))
                     print(i)
                     matrix[starting_state][i] = 0
                     continue
@@ -234,7 +234,6 @@ class HMM:
         debug_matrix = numpy.array(matrix)
 
    
-    
         print(debug_matrix)
         print(matrix)
 
@@ -267,6 +266,145 @@ class HMM:
 
 
     def viterbi(self, sequence):
+          #initialize the matrix
+        matrix = []
+        backtrack_matrix = []
+
+        #get all the types of states
+        keys = list(self.transitions.keys()) 
+        print(keys)
+        #define emissions and transitions
+        emissions = self.emissions
+        transitions = self.transitions
+
+        #get the observations
+        outputs = sequence
+        sequence_length = len(sequence) + 1
+
+        #outputs = ['purr','silent','silent','meow','meow']
+        #sequence_length = len(outputs) + 1
+        
+        #Initalize the matrix and set # to 1 
+        for s in keys:
+            states = []
+            backtrack = []
+            if s == "#" :
+                for i in range(sequence_length) :
+                    states.append(1.0) 
+                    backtrack.append(1.0)
+            else :
+                for i in range(sequence_length) :
+                    states.append(0.0)
+                    backtrack.append(0)
+
+            backtrack_matrix.append(backtrack)
+            matrix.append(states)
+        
+        
+        #check where the value of starting state is
+        starting_state = 0
+        i = 0
+
+        #initial the '-' column 
+        for s in keys:
+            #if set the starting to 0
+            if s == '#' :
+                starting_state = i
+                matrix[i][1] = 0
+            else :
+                #get the starting values
+                print(outputs[0]) 
+                if outputs[0] not in emissions[s] :
+                    matrix[i][1] = 0
+                else :
+                    matrix[i][1] = float(emissions[s][outputs[0]]) * float(transitions['#'][s]) * matrix[starting_state][0]
+            i = i + 1
+
+
+
+        for i in range(2,len(outputs) + 1) :
+            for s in keys:
+
+                # set # to 0 and skip #
+                if s == '#' :
+                    print('Starting  State: '  + str(starting_state))
+                    print(i)
+                    matrix[starting_state][i] = 0
+                    backtrack_matrix[starting_state][i] = 0
+                    continue
+
+                sum = 0
+                observe_max = -1
+                max_index = 0
+
+                for s2 in keys :
+                    if s2 == '#':
+                        continue
+                    #print(s2)
+                    # print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
+                    #print(outputs[i-1])
+                    # something like [happy's][silents]
+                    #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
+                    #print("TRANSITION: " + transitions[s2][s])
+
+                    if outputs[i-1] not in emissions[s] :
+                        sum = sum + 0
+                    else :
+                    
+                        print("Current State: " + str(s))
+                        print(s2)
+                        print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))   
+                        print("EMISSION: " + str(emissions[s][outputs[i-1]]))
+                        print("TRANSITION: " + transitions[s2][s])
+                        observation_val = float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s])
+                        sum = sum + observation_val
+                        
+                        if (observation_val > observe_max) :
+                            observe_max = observation_val
+                            max_index = keys.index(s2) 
+
+                        print("Observation Value: " + str(observation_val))
+                        print("Observation Max: " + str(observe_max))
+                        print("SUM " + str(sum))
+                    #print("SUM: " + str(sum))
+                
+                print('MAX INDEX: ' + str(max_index))
+                print("--------")
+                print("TOTAL SUM: " + str(sum))
+                print("--------")
+                matrix[keys.index(s)][i] = sum
+                backtrack_matrix[keys.index(s)][i] = max_index
+
+            #print(i)
+       
+        debug_matrix = numpy.array(matrix)
+
+   
+        print(debug_matrix)
+        print(matrix)
+
+        max = -1
+        max_state = ""
+        values = 0
+        print(keys)
+
+        #Get the max probability and the state
+        for i in range(len(matrix)):
+            if matrix[i][len(outputs)] > max :
+                max = matrix[i][len(outputs)]
+                max_state = keys[i]
+            values = values + matrix[i][len(outputs)]
+ 
+            print(matrix[i][len(outputs)])   
+            
+        print(sequence)
+        print("FORWARD RESULT: " + max_state)
+        print("Probability: " + str(max / values))
+
+        debug_backtrack_matrix = numpy.array(backtrack_matrix)
+        print(debug_backtrack_matrix)
+
+        return max_state
         pass
     ## You do this. Given a sequence with a list of emissions, fill in the most likely
     ## hidden states using the Viterbi algorithm.
@@ -284,6 +422,8 @@ if __name__ == "__main__":
     #The directory that will be walked
     parser.add_argument("domain", help="help the pat")
     parser.add_argument("--forward", help="This will strip a part of the word")
+    parser.add_argument("--viterbi", help="This will strip a part of the word")
+
     parser.add_argument("--generate", help="Number of observations you would like to generate")
 
     args = parser.parse_args()
@@ -293,11 +433,15 @@ if __name__ == "__main__":
     print('domain: ' + str(args.domain))
     print('generate: ' + str(args.generate))
     print('forward: ' + str(args.forward))
+    print('viterbi: ' + str(args.viterbi))
+
     print("------------")
 
     domain = args.domain
     num_sequence = args.generate
     observation = args.forward
+    viterbi = args.viterbi
+
     h = HMM()
     h.load(domain)
     if args.generate is not None:
@@ -312,6 +456,13 @@ if __name__ == "__main__":
                 
                 words = lines.rstrip('\n').split(" ")
                 h.forward(words)
+
+    if args.viterbi is not None:
+        print('YAYYY')
+        with open(viterbi) as f:
+            for lines in f : 
+                words = lines.rstrip('\n').split(" ")
+                h.viterbi(words)
 ''' 
     h = HMM()
     h.load('partofspeech')
