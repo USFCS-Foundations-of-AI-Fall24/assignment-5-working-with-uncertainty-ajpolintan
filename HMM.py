@@ -387,16 +387,47 @@ class HMM:
         max_state = ""
         values = 0
         print(keys)
-
+        
+        max_index = 0
         #Get the max probability and the state
         for i in range(len(matrix)):
             if matrix[i][len(outputs)] > max :
                 max = matrix[i][len(outputs)]
                 max_state = keys[i]
+                max_index = keys.index(max_state)
             values = values + matrix[i][len(outputs)]
- 
+
             print(matrix[i][len(outputs)])   
             
+        
+        print('MAXIMUM INDEX: ' + str(max_index))
+        print("Length: " + str(len(backtrack_matrix)))
+        
+        
+        viterbi_sequence = []
+        #append the last state
+        viterbi_sequence.append(max_state)
+
+        print(backtrack_matrix[max_index][len(outputs)])
+        ## value of index
+        back_val = backtrack_matrix[max_index][len(outputs)]
+        #append the value going back
+        viterbi_sequence.append(keys[back_val])
+        
+        print('--------------------------------')
+        for b in reversed(range(len(outputs))) :
+            back_val = backtrack_matrix[back_val][b] 
+            
+            viterbi_sequence.append(keys[back_val])
+            print(back_val)
+        #pop extra values
+        viterbi_sequence.pop()
+        viterbi_sequence.pop()
+        viterbi_sequence.reverse()
+        print('--------------------------------')
+        print(backtrack_matrix[back_val][len(outputs) - 1])
+
+
         print(sequence)
         print("FORWARD RESULT: " + max_state)
         print("Probability: " + str(max / values))
@@ -404,6 +435,7 @@ class HMM:
         debug_backtrack_matrix = numpy.array(backtrack_matrix)
         print(debug_backtrack_matrix)
 
+        print(viterbi_sequence)
         return max_state
         pass
     ## You do this. Given a sequence with a list of emissions, fill in the most likely
