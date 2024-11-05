@@ -370,9 +370,9 @@ class HMM:
                 
                 print('MAX INDEX: ' + str(max_index))
                 print("--------")
-                print("TOTAL SUM: " + str(sum))
+                print("OBSERVE MAX: " + str(observe_max))
                 print("--------")
-                matrix[keys.index(s)][i] = sum
+                matrix[keys.index(s)][i] = observe_max
                 backtrack_matrix[keys.index(s)][i] = max_index
 
             #print(i)
@@ -404,22 +404,24 @@ class HMM:
         print("Length: " + str(len(backtrack_matrix)))
         
         
+        
+        debug_backtrack_matrix = numpy.array(backtrack_matrix)
+        print(debug_backtrack_matrix)
+
         viterbi_sequence = []
         #append the last state
         viterbi_sequence.append(max_state)
 
         print(backtrack_matrix[max_index][len(outputs)])
         ## value of index
-        back_val = backtrack_matrix[max_index][len(outputs)]
+        back_val = int(backtrack_matrix[max_index][len(outputs)])
         #append the value going back
         viterbi_sequence.append(keys[back_val])
         
         print('--------------------------------')
         for b in reversed(range(len(outputs))) :
-            back_val = backtrack_matrix[back_val][b] 
-            
+            back_val = int(backtrack_matrix[back_val][b]) 
             viterbi_sequence.append(keys[back_val])
-            print(back_val)
         #pop extra values
         viterbi_sequence.pop()
         viterbi_sequence.pop()
@@ -432,12 +434,9 @@ class HMM:
         print("FORWARD RESULT: " + max_state)
         print("Probability: " + str(max / values))
 
-        debug_backtrack_matrix = numpy.array(backtrack_matrix)
-        print(debug_backtrack_matrix)
 
         print(viterbi_sequence)
         return max_state
-        pass
     ## You do this. Given a sequence with a list of emissions, fill in the most likely
     ## hidden states using the Viterbi algorithm.
 
