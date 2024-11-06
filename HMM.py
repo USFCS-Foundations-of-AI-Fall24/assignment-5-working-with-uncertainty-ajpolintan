@@ -148,7 +148,11 @@ class HMM:
         print(keys)
         #define emissions and transitions
         emissions = self.emissions
+        print(emissions)
+
         transitions = self.transitions
+        print('--------------------')
+        print(transitions)
 
         #get the observations
         outputs = sequence
@@ -212,7 +216,7 @@ class HMM:
                     #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
                     #print("TRANSITION: " + transitions[s2][s])
 
-                    if outputs[i-1] not in emissions[s] :
+                    if outputs[i-1] not in emissions[s] or s not in transitions[s2]:
                         sum = sum + 0
                     else :
                         print("Current State: " +str(s))
@@ -347,7 +351,7 @@ class HMM:
                     #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
                     #print("TRANSITION: " + transitions[s2][s])
 
-                    if outputs[i-1] not in emissions[s] :
+                    if outputs[i-1] not in emissions[s] or s not in transitions[s2]:
                         sum = sum + 0
                     else :
                     
