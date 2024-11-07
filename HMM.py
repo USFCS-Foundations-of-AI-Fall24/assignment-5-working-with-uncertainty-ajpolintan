@@ -145,14 +145,15 @@ class HMM:
 
         #get all the types of states
         keys = list(self.transitions.keys()) 
-        print(keys)
+        #print(keys)
+        
         #define emissions and transitions
         emissions = self.emissions
-        print(emissions)
+        #print(emissions)
 
         transitions = self.transitions
-        print('--------------------')
-        print(transitions)
+        #print('--------------------')
+        #print(transitions)
 
         #get the observations
         outputs = sequence
@@ -185,7 +186,7 @@ class HMM:
                 matrix[i][1] = 0
             else :
                 #get the starting values
-                print(outputs[0]) 
+                #print(outputs[0]) 
                 if outputs[0] not in emissions[s] :
                     matrix[i][1] = 0
                 else :
@@ -199,8 +200,8 @@ class HMM:
 
                 # set # to 0 and skip #
                 if s == '#' :
-                    print('Starting  State: '  + str(starting_state))
-                    print(i)
+                    #print('Starting  State: '  + str(starting_state))
+                    #print(i)
                     matrix[starting_state][i] = 0
                     continue
 
@@ -219,32 +220,35 @@ class HMM:
                     if outputs[i-1] not in emissions[s] or s not in transitions[s2]:
                         sum = sum + 0
                     else :
+                        ''' 
                         print("Current State: " +str(s))
                         print(s2)
                         print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))   
                         print("EMISSION: " + str(emissions[s][outputs[i-1]]))
                         print("TRANSITION: " + transitions[s2][s])
-                        
+                        '''
                         sum = sum + float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s]) 
-                        print("SUM " + str(sum))
+                        #print("SUM " + str(sum))
                     #print("SUM: " + str(sum))
-                
+
+                ''' 
                 print("--------")
                 print("TOTAL SUM: " + str(sum))
                 print("--------")
+                ''' 
                 matrix[keys.index(s)][i] = sum
             #print(i)
        
         debug_matrix = numpy.array(matrix)
 
    
-        print(debug_matrix)
-        print(matrix)
+        #print(debug_matrix)
+        #print(matrix)
 
         max = -1
         max_state = ""
         values = 0
-        print(keys)
+        #print(keys)
 
         #Get the max probability and the state
         for i in range(len(matrix)):
@@ -253,11 +257,11 @@ class HMM:
                 max_state = keys[i]
             values = values + matrix[i][len(outputs)]
  
-            print(matrix[i][len(outputs)])   
+            #print(matrix[i][len(outputs)])   
             
-        print(sequence)
-        print("FORWARD RESULT: " + max_state)
-        print("Probability: " + str(max / values))
+        #print(sequence)
+        #print("FORWARD RESULT: " + max_state)
+        #print("Probability: " + str(max / values))
         return max_state
         #matrix is now a list of lists 
         
@@ -276,7 +280,7 @@ class HMM:
 
         #get all the types of states
         keys = list(self.transitions.keys()) 
-        print(keys)
+        #print(keys)
         #define emissions and transitions
         emissions = self.emissions
         transitions = self.transitions
@@ -317,7 +321,7 @@ class HMM:
                 matrix[i][1] = 0
             else :
                 #get the starting values
-                print(outputs[0]) 
+                #print(outputs[0]) 
                 if outputs[0] not in emissions[s] :
                     matrix[i][1] = 0
                 else :
@@ -331,8 +335,8 @@ class HMM:
 
                 # set # to 0 and skip #
                 if s == '#' :
-                    print('Starting  State: '  + str(starting_state))
-                    print(i)
+                    #print('Starting  State: '  + str(starting_state))
+                    #print(i)
                     matrix[starting_state][i] = 0
                     backtrack_matrix[starting_state][i] = 0
                     continue
@@ -355,11 +359,13 @@ class HMM:
                         sum = sum + 0
                     else :
                     
+                        '''  
                         print("Current State: " + str(s))
                         print(s2)
                         print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))   
                         print("EMISSION: " + str(emissions[s][outputs[i-1]]))
                         print("TRANSITION: " + transitions[s2][s])
+                        '''
                         observation_val = float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s])
                         sum = sum + observation_val
                         
@@ -367,30 +373,34 @@ class HMM:
                             observe_max = observation_val
                             max_index = keys.index(s2) 
 
+                        '''
                         print("Observation Value: " + str(observation_val))
                         print("Observation Max: " + str(observe_max))
                         print("SUM " + str(sum))
+                        '''
                     #print("SUM: " + str(sum))
                 
+                '''
                 print('MAX INDEX: ' + str(max_index))
                 print("--------")
                 print("OBSERVE MAX: " + str(observe_max))
                 print("--------")
+                '''
                 matrix[keys.index(s)][i] = observe_max
                 backtrack_matrix[keys.index(s)][i] = max_index
-
+                
             #print(i)
        
         debug_matrix = numpy.array(matrix)
 
    
-        print(debug_matrix)
-        print(matrix)
+        #print(debug_matrix)
+        #print(matrix)
 
         max = -1
         max_state = ""
         values = 0
-        print(keys)
+        #print(keys)
         
         max_index = 0
         #Get the max probability and the state
@@ -401,28 +411,29 @@ class HMM:
                 max_index = keys.index(max_state)
             values = values + matrix[i][len(outputs)]
 
-            print(matrix[i][len(outputs)])   
+            #print(matrix[i][len(outputs)])   
             
         
-        print('MAXIMUM INDEX: ' + str(max_index))
-        print("Length: " + str(len(backtrack_matrix)))
+        #print('MAXIMUM INDEX: ' + str(max_index))
+        #print("Length: " + str(len(backtrack_matrix)))
         
         
         
         debug_backtrack_matrix = numpy.array(backtrack_matrix)
-        print(debug_backtrack_matrix)
+        #print(debug_backtrack_matrix)
 
         viterbi_sequence = []
         #append the last state
         viterbi_sequence.append(max_state)
 
-        print(backtrack_matrix[max_index][len(outputs)])
+        #print(backtrack_matrix[max_index][len(outputs)])
+        
         ## value of index
         back_val = int(backtrack_matrix[max_index][len(outputs)])
         #append the value going back
         viterbi_sequence.append(keys[back_val])
         
-        print('--------------------------------')
+        #print('--------------------------------')
         for b in reversed(range(len(outputs))) :
             back_val = int(backtrack_matrix[back_val][b]) 
             viterbi_sequence.append(keys[back_val])
@@ -430,6 +441,7 @@ class HMM:
         viterbi_sequence.pop()
         viterbi_sequence.pop()
         viterbi_sequence.reverse()
+        ''' 
         print('--------------------------------')
         print(backtrack_matrix[back_val][len(outputs) - 1])
 
@@ -440,7 +452,8 @@ class HMM:
 
 
         print(viterbi_sequence)
-        return max_state
+        '''
+        return viterbi_sequence
     ## You do this. Given a sequence with a list of emissions, fill in the most likely
     ## hidden states using the Viterbi algorithm.
 
@@ -483,30 +496,27 @@ if __name__ == "__main__":
         h.generate(int(num_sequence))
 
     if args.forward is not None:
-        print('YAYYY')
         with open(observation) as f:
-            print("HETAT")
             for lines in f : 
-                print("RARSRA" + lines)
                 
                 words = lines.rstrip('\n').split(" ")
-                h.forward(words)
+                if lines != "\n" :
+                    #get the final predicted state
+                    f_state = h.forward(words)
+                    print("SEQUENCE: " + str(words))
+                    print("FINAL PREDICTED STATE: " + str(f_state))
 
     if args.viterbi is not None:
-        print('YAYYY')
         with open(viterbi) as f:
             for lines in f : 
                 words = lines.rstrip('\n').split(" ")
-                h.viterbi(words)
-''' 
-    h = HMM()
-    h.load('partofspeech')
-    print(h.transitions)
-    print("------------------------")
-    print(h.emissions)
-    seq = h.generate(10)
-    print(seq)
-    h.forward(seq)
-'''    
+                if lines != "\n" :
+                    viterbi = h.viterbi(words)
+                    line = ""
+                    for v in viterbi :
+                        line = line + v + " "
 
+                    print("SEQUENCE: " + str(words))
+                    print("PREDICTED SEQUENCE: " + str(line))
+                    print()
 
