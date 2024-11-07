@@ -262,7 +262,8 @@ class HMM:
         #print(sequence)
         #print("FORWARD RESULT: " + max_state)
         #print("Probability: " + str(max / values))
-        return max_state
+        probability = max / values
+        return max_state, probability
         #matrix is now a list of lists 
         
     ## you do this: Implement the Viterbi algorithm. Given a Sequence with a list of emissions,
@@ -502,9 +503,18 @@ if __name__ == "__main__":
                 words = lines.rstrip('\n').split(" ")
                 if lines != "\n" :
                     #get the final predicted state
-                    f_state = h.forward(words)
+                    f_state, probability = h.forward(words)
                     print("SEQUENCE: " + str(words))
                     print("FINAL PREDICTED STATE: " + str(f_state))
+                    print("PROBABILITY: " + str(probability))
+                    print("")
+                    if (domain == 'lander') :
+                        safe_spots = ["4,3","3,4","4,4","2,5","5,5"]
+                        if f_state in safe_spots :
+                            print("Lander is: SAFE")
+                        else :
+                            print("Lander is: NOT SAFE")
+
 
     if args.viterbi is not None:
         with open(viterbi) as f:
