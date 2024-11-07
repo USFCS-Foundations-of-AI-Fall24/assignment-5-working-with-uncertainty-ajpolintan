@@ -52,7 +52,7 @@ cpd_starts = TabularCPD(
     state_names={"Starts":['yes','no'], "Ignition":["Works", "Doesn't work"], "Gas":['Full',"Empty"], "KeyPresent":['Present','Not Present'],},
 )
 
-print(cpd_starts)
+#print(cpd_starts)
 
 cpd_moves = TabularCPD(
     variable="Moves", variable_card=2,
