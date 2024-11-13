@@ -114,12 +114,10 @@ class HMM:
         state_list = ""
         for s in states:
             state_list = state_list + s + " "
-        print(state_list)
 
         emission_list = ""
         for e in emissions: 
             emission_list = emission_list + e + " "
-        print(emission_list)
     
         return Sequence(states,emissions)
     
@@ -494,7 +492,8 @@ if __name__ == "__main__":
     h = HMM()
     h.load(domain)
     if args.generate is not None:
-        h.generate(int(num_sequence))
+        seq = h.generate(int(num_sequence))
+        print(seq)
 
     if args.forward is not None:
         with open(observation) as f:
@@ -504,16 +503,18 @@ if __name__ == "__main__":
                 if lines != "\n" :
                     #get the final predicted state
                     f_state, probability = h.forward(words)
+                    safe_spots = ["4,3","3,4","4,4","2,5","5,5"]
+
                     print("SEQUENCE: " + str(words))
+                    print("SAFE SPOTS: " + str(safe_spots))
                     print("FINAL PREDICTED STATE: " + str(f_state))
                     print("PROBABILITY: " + str(probability))
-                    print("")
                     if (domain == 'lander') :
-                        safe_spots = ["4,3","3,4","4,4","2,5","5,5"]
                         if f_state in safe_spots :
                             print("Lander is: SAFE")
                         else :
                             print("Lander is: NOT SAFE")
+                    print()
 
 
     if args.viterbi is not None:

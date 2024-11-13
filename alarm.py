@@ -61,13 +61,20 @@ if __name__ == "__main__":
     q = alarm_infer.query(variables=["JohnCalls", "Earthquake"],evidence={"Burglary":"yes","MaryCalls":"yes"})
 
     #questions
+
+    #the probability of Mary Calling given that John called
     m_query = alarm_infer.query(variables=["MaryCalls"], evidence={"JohnCalls":"yes"})
+    #the probability of both John and Mary calling given Alarm
     jm_query = alarm_infer.query(variables=["JohnCalls", "MaryCalls"], evidence={"Alarm":"yes"})
+    #the probability of Alarm, given that Mary called.
     a_query = alarm_infer.query(variables=["Alarm"], evidence={"MaryCalls":"yes"} )
 
     print(q)
+    print("the probability of Mary Calling given that John called" )
     print(m_query)
+    print("the probability of both John and Mary calling given Alarm")
     print(jm_query)
+    print("the probability of Alarm, given that Mary called.")
     print(a_query)
     
     
