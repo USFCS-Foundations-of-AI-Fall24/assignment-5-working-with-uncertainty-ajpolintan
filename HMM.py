@@ -462,6 +462,23 @@ if __name__ == "__main__":
     #    print("Usage: wordfreq {--load --forward file")
     #    sys.exit(-1)
 
+    '''  RECCOMENDED COMMAND LINE ARGUMENTS TO TEST
+         
+         python hmm.py cat --generate 20
+         python hmm.py lander --generate 20
+         python hmm.py partofspeech --generate 20
+
+         
+         python hmm.py cat --forward cat_sequence.obs  
+         python hmm.py lander --forward lander_sequence.obs      
+         python hmm.py partofspeech --forward ambiguous_sents.obs
+
+         
+         python hmm.py cat --viterbi cat_sequence.obs       
+         python hmm.py lander -viterbi lander_sequence.obs  
+         python hmm.py partofspeech --viterbi ambiguous_sents.obs
+    '''
+
 
     parser = argparse.ArgumentParser()
 

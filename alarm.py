@@ -72,9 +72,13 @@ if __name__ == "__main__":
     print(q)
     print("the probability of Mary Calling given that John called" )
     print(m_query)
+    print("Probablity = 0.1002")
     print("the probability of both John and Mary calling given Alarm")
     print(jm_query)
+    print("Probablity = 0.0950")
+
     print("the probability of Alarm, given that Mary called.")
     print(a_query)
+    print("Probability = 0.9826")
     
     

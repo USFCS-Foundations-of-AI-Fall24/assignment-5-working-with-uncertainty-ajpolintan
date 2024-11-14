@@ -84,11 +84,12 @@ if __name__ == "__main__":
     q = car_infer.query(variables=["Battery"], evidence={"Moves":"no"})
     print("Given that the car will not move, what is the probability that the battery is not working?")
     print(q)
+    print("Probabiltiy = 0.3388")
     #what is the probability the car will not stoiop given the radio is not working
     q = car_infer.query(variables=["Starts"], evidence={"Radio":"Doesn't turn on"})
     print("Given that the radio is not working, what is the probability that the car will not start?")
     print(q)
-
+    print("Probabiltiy = 0.9120")
     #what is the probability of the radio working change if we discover that the car has gas in it given the battery is working
     q = car_infer.query(variables=["Radio"], evidence={"Battery":"Works"})
     print("Given that the battery is working, does the probability of the radio working change if we discover that the car has gas in it?")
@@ -113,8 +114,9 @@ if __name__ == "__main__":
     q = car_infer.query(variables=["Starts"], evidence={"Radio" : "turns on", "Gas" : "Full"})
     print("What is the probability that the car starts if the radio works and it has gas in it? ")
     print(q)
-
+    print("Probability = 0.5216")
     #query. Key is not present given that the car does not move
     q = car_infer.query(variables=["KeyPresent"], evidence={"Moves": "no"})
     print("the probability that the key is not present given that the car does not move.")
     print(q)
+    print("Probability: 0.3396")
