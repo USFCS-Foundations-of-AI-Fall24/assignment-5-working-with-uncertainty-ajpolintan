@@ -5,8 +5,7 @@ import codecs
 import os
 import numpy
 
-# Sequence - represents a sequence of hidden states and corresponding
-# output variables.
+# NAME : ALLEN JAKE POLINTAN
 
 class Sequence:
     def __init__(self, stateseq, outputseq):
@@ -97,7 +96,7 @@ class HMM:
        # print("initial state: " + initial_state)
        # print("inital emission: " + initial_emission)
         next_state = "" 
-        #->send in happy
+        # loop through the amount of states the user wants generated
         for i in range(n-1) :
             ## if next state is not empty
             if next_state == "":
@@ -110,7 +109,7 @@ class HMM:
             states.append(next_state)
             emissions.append(emission)
            
-        
+        #append states and outputs to a list and put it in a sequence
         state_list = ""
         for s in states:
             state_list = state_list + s + " "
@@ -143,22 +142,17 @@ class HMM:
 
         #get all the types of states
         keys = list(self.transitions.keys()) 
-        #print(keys)
         
         #define emissions and transitions
         emissions = self.emissions
-        #print(emissions)
 
         transitions = self.transitions
-        #print('--------------------')
         #print(transitions)
 
         #get the observations
         outputs = sequence
         sequence_length = len(sequence) + 1
 
-        #outputs = ['purr','silent','silent','meow','meow']
-        #sequence_length = len(outputs) + 1
         
         #Initalize the matrix and set # to 1 
         for s in keys:
@@ -178,43 +172,35 @@ class HMM:
 
         #initial the '-' column 
         for s in keys:
-            #if set the starting to 0
+            #check for the starting state
             if s == '#' :
                 starting_state = i
                 matrix[i][1] = 0
             else :
-                #get the starting values
-                #print(outputs[0]) 
+                #get the starting values for '-' column
                 if outputs[0] not in emissions[s] :
                     matrix[i][1] = 0
                 else :
+                    #get probability values for each observation for the day
                     matrix[i][1] = float(emissions[s][outputs[0]]) * float(transitions['#'][s]) * matrix[starting_state][0]
             i = i + 1
 
 
-
+        #loop through the rest of the sequence
         for i in range(2,len(outputs) + 1) :
             for s in keys:
 
                 # set # to 0 and skip #
                 if s == '#' :
-                    #print('Starting  State: '  + str(starting_state))
-                    #print(i)
                     matrix[starting_state][i] = 0
                     continue
 
                 sum = 0
-                #happy
                 for s2 in keys :
                     if s2 == '#':
                         continue
-                    #print(s2)
-                    # print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
-                    #print(outputs[i-1])
-                    # something like [happy's][silents]
-                    #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
-                    #print("TRANSITION: " + transitions[s2][s])
 
+                    #check if the observation belongs in the emission or the observation belongs in the transitions
                     if outputs[i-1] not in emissions[s] or s not in transitions[s2]:
                         sum = sum + 0
                     else :
@@ -225,9 +211,8 @@ class HMM:
                         print("EMISSION: " + str(emissions[s][outputs[i-1]]))
                         print("TRANSITION: " + transitions[s2][s])
                         '''
+                        #get probability values for each observation for the day
                         sum = sum + float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s]) 
-                        #print("SUM " + str(sum))
-                    #print("SUM: " + str(sum))
 
                 ''' 
                 print("--------")
@@ -239,7 +224,6 @@ class HMM:
        
         debug_matrix = numpy.array(matrix)
 
-   
         #print(debug_matrix)
         #print(matrix)
 
@@ -255,11 +239,7 @@ class HMM:
                 max_state = keys[i]
             values = values + matrix[i][len(outputs)]
  
-            #print(matrix[i][len(outputs)])   
-            
-        #print(sequence)
-        #print("FORWARD RESULT: " + max_state)
-        #print("Probability: " + str(max / values))
+        #get the probability of the final state happening. Dividing the greatest value observation in the last column by the sum of all the observations in the last column
         probability = max / values
         return max_state, probability
         #matrix is now a list of lists 
@@ -279,7 +259,7 @@ class HMM:
 
         #get all the types of states
         keys = list(self.transitions.keys()) 
-        #print(keys)
+
         #define emissions and transitions
         emissions = self.emissions
         transitions = self.transitions
@@ -288,8 +268,6 @@ class HMM:
         outputs = sequence
         sequence_length = len(sequence) + 1
 
-        #outputs = ['purr','silent','silent','meow','meow']
-        #sequence_length = len(outputs) + 1
         
         #Initalize the matrix and set # to 1 
         for s in keys:
@@ -320,10 +298,10 @@ class HMM:
                 matrix[i][1] = 0
             else :
                 #get the starting values
-                #print(outputs[0]) 
                 if outputs[0] not in emissions[s] :
                     matrix[i][1] = 0
                 else :
+                    #get probability values for each observation for the day
                     matrix[i][1] = float(emissions[s][outputs[0]]) * float(transitions['#'][s]) * matrix[starting_state][0]
             i = i + 1
 
@@ -334,8 +312,6 @@ class HMM:
 
                 # set # to 0 and skip #
                 if s == '#' :
-                    #print('Starting  State: '  + str(starting_state))
-                    #print(i)
                     matrix[starting_state][i] = 0
                     backtrack_matrix[starting_state][i] = 0
                     continue
@@ -347,12 +323,6 @@ class HMM:
                 for s2 in keys :
                     if s2 == '#':
                         continue
-                    #print(s2)
-                    # print("PREVIOUS VALUE: " + str(matrix[keys.index(s2)][i-1]))
-                    #print(outputs[i-1])
-                    # something like [happy's][silents]
-                    #print("EMISSION: " + str(emissions[s][outputs[i-1]]))
-                    #print("TRANSITION: " + transitions[s2][s])
 
                     if outputs[i-1] not in emissions[s] or s not in transitions[s2]:
                         sum = sum + 0
@@ -365,41 +335,26 @@ class HMM:
                         print("EMISSION: " + str(emissions[s][outputs[i-1]]))
                         print("TRANSITION: " + transitions[s2][s])
                         '''
+                        #get probability values for each observation for the day
                         observation_val = float(matrix[keys.index(s2)][i-1]) * float(emissions[s][outputs[i-1]])  * float(transitions[s2][s])
                         sum = sum + observation_val
                         
+                        #find the greatest value observation for that day
                         if (observation_val > observe_max) :
                             observe_max = observation_val
                             max_index = keys.index(s2) 
 
-                        '''
-                        print("Observation Value: " + str(observation_val))
-                        print("Observation Max: " + str(observe_max))
-                        print("SUM " + str(sum))
-                        '''
-                    #print("SUM: " + str(sum))
-                
-                '''
-                print('MAX INDEX: ' + str(max_index))
-                print("--------")
-                print("OBSERVE MAX: " + str(observe_max))
-                print("--------")
-                '''
+                #append to probability values to matrix and index's to backtrack matrix
                 matrix[keys.index(s)][i] = observe_max
                 backtrack_matrix[keys.index(s)][i] = max_index
-                
-            #print(i)
-       
+                       
         debug_matrix = numpy.array(matrix)
 
    
-        #print(debug_matrix)
-        #print(matrix)
 
         max = -1
         max_state = ""
         values = 0
-        #print(keys)
         
         max_index = 0
         #Get the max probability and the state
@@ -413,45 +368,30 @@ class HMM:
             #print(matrix[i][len(outputs)])   
             
         
-        #print('MAXIMUM INDEX: ' + str(max_index))
-        #print("Length: " + str(len(backtrack_matrix)))
-        
-        
-        
+                
         debug_backtrack_matrix = numpy.array(backtrack_matrix)
         #print(debug_backtrack_matrix)
 
+        #initialize sequence
         viterbi_sequence = []
         #append the last state
         viterbi_sequence.append(max_state)
 
-        #print(backtrack_matrix[max_index][len(outputs)])
         
         ## value of index
         back_val = int(backtrack_matrix[max_index][len(outputs)])
         #append the value going back
         viterbi_sequence.append(keys[back_val])
         
-        #print('--------------------------------')
+        #append the rest of the states
         for b in reversed(range(len(outputs))) :
             back_val = int(backtrack_matrix[back_val][b]) 
             viterbi_sequence.append(keys[back_val])
-        #pop extra values
+        #pop any extra values
         viterbi_sequence.pop()
         viterbi_sequence.pop()
         viterbi_sequence.reverse()
-        ''' 
-        print('--------------------------------')
-        print(backtrack_matrix[back_val][len(outputs) - 1])
-
-
-        print(sequence)
-        print("FORWARD RESULT: " + max_state)
-        print("Probability: " + str(max / values))
-
-
-        print(viterbi_sequence)
-        '''
+       
         return viterbi_sequence
     ## You do this. Given a sequence with a list of emissions, fill in the most likely
     ## hidden states using the Viterbi algorithm.
